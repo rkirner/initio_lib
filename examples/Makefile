@@ -1,12 +1,12 @@
 #
-# Simple Makefile for svn interface
+# Simple Makefile for compiling and git interface
 #
 SHELL = bash
 GCC = gcc
 PROG1 = initioTest
 PROG2 = initioTest2
 
-.PHONY: all status update commit sync help
+.PHONY: all run status pull commit sync help
 
 all: $(PROG1) $(PROG2)
 
@@ -20,21 +20,23 @@ $(PROG2): $(PROG2).c
 	$(GCC) -o $@ -Wall -Werror -lcurses -lwiringPi -lpthread -linitio -I.. $<
 
 status:
-	svn status
+	git status
 
-update:
-	svn update
+pull:
+	git pull
 
 commit:
-	svn commit -m "Update by $(USER)..."
+	git commit
+	git push
 
-sync: update commit
+sync: pull commit
 
 help:
 	@echo
 	@echo "Possible commands:"
+	@echo " > make run"
 	@echo " > make status"
-	@echo " > make update"
+	@echo " > make pull"
 	@echo " > make commit"
 	@echo " > make sync"
 	@echo
