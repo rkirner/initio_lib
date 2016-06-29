@@ -1,0 +1,45 @@
+Servo demon servod from ServoBlaster project:
+=============================================
+
+initio_lib uses the servo demon servod from the ServoBlaster project
+to control the position of the Tilt/Plan servos.
+
+The default call of servod is as follows:
+
+  sudo servod --pcm --idle-timeout=20000 -p1pins="18,22" > /dev/null
+
+with the concretely chosen binary depending on the PATH environment
+variable. One can customise the version/location of servod by setting
+the environment variable SERVOD. For example:
+
+  export SERVOD=/usr/local/bin/servod
+
+The communication with servod works by writing commands to 
+
+  /dev/servoblaster
+
+
+For convenience, this folder includes a binary of servod.
+If this binary does not run on a particular system, one might re-compile
+it from its sources.
+
+Further details:
+https://github.com/richardghirst/PiBits/tree/master/ServoBlaster
+
+
+
+
+Header files from the wiringPi project:
+=======================================
+
+The following header files are copied from the wiringPi project:
+
+softPwm.h
+wiringPi.h
+
+These header files are just provided for convenience to allow compilation of
+initio_lib on non-RaspberryPI machines. To use the library on the RaspberryPI
+one needs to properly install wiringPi, including its dynamic loaded libraries.
+
+Further details:
+https://projects.drogon.net/raspberry-pi/wiringpi/

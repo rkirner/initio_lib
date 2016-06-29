@@ -1,0 +1,45 @@
+
+initio_lib:
+===========
+
+Purpose: C library to externalise all initio/PiRoCon specific hardware
+         of the 4tronix initio robot car with RaspberryPI.
+
+author:  Raimund Kirner, University of Hertfordshire
+         initial version: Jun.2016
+
+license: GNU LESSER GENERAL PUBLIC LICENSE
+         Version 2.1, February 1999
+         (for details see LICENSE file)
+
+Dependencies of this library:
+o wiringPi
+  http://wiringpi.com
+  (needs to be downloaded and installed locally)
+o ServoBlaster
+  https://github.com/richardghirst/PiBits/tree/master/ServoBlaster
+  (instead of compiling it from source, a binary for 
+   RaspberryPI is included.)
+
+
+Installation:
+Simply type:
+
+  $> make install
+
+This compiles the library and copies the files into
+  /usr/local/include
+  /usr/local/lib
+
+Please check whether your system has /usr/local/lib in the dynamic
+library path.  If not, adding the line
+  /usr/local/lib
+into the file '/etc/ld.so.conf' might help, with running afterwards
+  $> sudo ldconfig
+
+
+Development notes:
+This library has been heavily inspired by the original Python version
+provided by Gareth Davies, Sep 2013. While care has been taken to
+keep the interface similar, one should check the differences when
+porting sample programs to C.
