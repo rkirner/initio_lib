@@ -2,11 +2,12 @@
 initio_lib:
 ===========
 
-Purpose: C library to externalise all initio/PiRoCon specific hardware
-         of the 4tronix initio robot car with RaspberryPI.
+Purpose: C library to externalise all initio specific hardware
+         of the 4tronix initio robot car with Raspberry PI.
 
 author:  Raimund Kirner, University of Hertfordshire
-         initial version: Jun.2016
+         initial version: Jun.2016 (support only for PiRoCon 2.0 board)
+         updated version: Aug.2016 (added support for RoboHAT 1.0 board)
 
 license: GNU LESSER GENERAL PUBLIC LICENSE
          Version 2.1, February 1999

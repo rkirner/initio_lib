@@ -2,13 +2,16 @@
 //
 // C library to externalise all Initio/PiRoCon specific hardware
 // author: Raimund Kirner, University of Hertfordshire
-//         initial version: Jun.2016
+//         initial version: Jun.2016 (support only for PiRoCon 2.0 board)
+//         updated version: Aug.2016 (added support for RoboHAT 1.0 board)
 //
 // license: GNU LESSER GENERAL PUBLIC LICENSE
 //          Version 2.1, February 1999
 //          (for details see LICENSE file)
 //
 //======================================================================
+
+#define _GNU_SOURCE  // strcasestr
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,14 +40,64 @@ static char* MergeStrings(int num_args, char* str1, ...);
 // File pointer to Servo Demon interface (ServoBlaster)
 static FILE *fpServoBlaster = NULL;
 
+int L1, L2, R1, R2;  // board specific pin numbers of left/right motor
+int sonar;           // board specific pin numbers of ultrasonic sensor
+
 
 //======================================================================
 // General Functions
+
+// initio_identifyControlBoard():
+// Returns the type of the connected robot control board used for sensors/actuators
+// 
+int initio_identifyControlBoard()
+{
+    FILE *fp;
+    int board;
+    char name[20];
+    // Test whether a HAT board is connected
+    fp=fopen("/proc/device-tree/hat/product","r");
+    if (fp != NULL)
+    {
+        // Test whether the connected HAT board is a RoboHAT
+        fgets(name,sizeof(name),fp);
+        board = ( ( strcasestr(name,"RoboHAT") != NULL ) ? ROBOHAT : UNKNOWN_HAT );
+        fclose(fp);
+    }
+    else
+    {
+        // No HAT board found, we assume a PiRoCon board is connected
+        board = PIROCON2;
+    }
+    return board;
+}
 
 // initio_init():
 // Initialises GPIO pins, switches motors off, etc
 void initio_Init()
 {
+    // set robot board specific pin numbers
+    switch ( initio_identifyControlBoard() )
+    {
+    case PIROCON2:
+         L1 = L1_PiRoCon;
+         L2 = L2_PiRoCon;
+         R1 = R1_PiRoCon;
+         R2 = R2_PiRoCon;
+         sonar = sonar_PiRoCon;
+         break;
+    case ROBOHAT:
+         L1 = L1_RoboHAT;
+         L2 = L2_RoboHAT;
+         R1 = R1_RoboHAT;
+         R2 = R2_RoboHAT;
+         sonar = sonar_RoboHAT;
+         break;
+    default: // unknown board idetified
+         fprintf(stderr,"initio_lib: Error: cannot identify robot control board.\n");
+         exit(EXIT_FAILURE);
+    };
+
     // Set GPIO bit numbering to use the physical pin numbers on the P1 connector only
     wiringPiSetupPhys () ;
 

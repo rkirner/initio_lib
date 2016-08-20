@@ -4,7 +4,8 @@
 //
 // C library to externalise all Initio/PiRoCon specific hardware
 // author: Raimund Kirner, University of Hertfordshire
-//         initial version: Jun.2016
+//         initial version: Jun.2016 (support only for PiRoCon 2.0 board)
+//         updated version: Aug.2016 (added support for RoboHAT 1.0 board)
 //
 // license: GNU LESSER GENERAL PUBLIC LICENSE
 //          Version 2.1, February 1999
@@ -12,12 +13,13 @@
 //
 //======================================================================
 
-
 #include <wiringPi.h>
 #include <softPwm.h>
 
 // When compiling you must include the followinglibraries: pthread, wiringPi:
 // cc -o myprog myprog.c -lwiringPi -lpthread
+
+// All pin numbers refer to the physical pin numbers on the P1 connector
 
 // Define a boolean data type
 #ifndef BOOL
@@ -30,11 +32,20 @@
 #define FALSE (0==1)
 #endif 
 
+// Type of connected robot control board
+#define UNKNOWN_HAT 0 // unknown HAT board connected
+#define PIROCON2    1 // assumed PiRoCon board 2.0 (no HAT connected)
+#define ROBOHAT     2 // RoboHAT board connected (uses different pins for: motors, ultrasonic)
+
 // Define pins for platform motors (left motor: pin 19+21; right motor: pin 24+26)
-#define L1 19
-#define L2 21
-#define R1 24
-#define R2 26
+#define L1_PiRoCon 19
+#define L2_PiRoCon 21
+#define R1_PiRoCon 24
+#define R2_PiRoCon 26
+#define L1_RoboHAT 36
+#define L2_RoboHAT 35
+#define R1_RoboHAT 33
+#define R2_RoboHAT 32
 
 #define wheelLeft  15 // Left  Wheel sensor 1 (Optional)
 #define wheelRight 16 // Right Wheel sensor 1 (Optional)
@@ -47,7 +58,8 @@
 
 // Define Sonar Pin (same pin for both Ping and Echo)
 // Note, that this can be either 8 or 23 on PiRoCon
-#define sonar 8
+#define sonar_PiRoCon  8 // pin on PiRoCon board
+#define sonar_RoboHAT 38 // pin on RoboHAT board
 
 // Define logical Servo pins for Pan/Tilt
 // (they are mapped to Port 1 pins 18 and 22)
@@ -57,6 +69,10 @@
 
 //======================================================================
 // General Functions
+
+// initio_identifyControlBoard():
+// Returns the type of the connected robot control board used for sensors/actuators
+int initio_identifyControlBoard() ;
 
 // initio_Init():
 // Initialises GPIO pins, set physical pin numbering, switches motors off, etc
