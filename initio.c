@@ -319,29 +319,43 @@ BOOL initio_IrLineRight (void)
 // Returns the distance in cm to the nearest reflecting object. 0 == no object
 unsigned int initio_UsGetDistance (void)
 {
-    unsigned int start, count, stop, elapsed, distance;
+    unsigned long start, count, stop, elapsed, distance;
 
     pinMode (sonar, OUTPUT) ; // set sonar as output
     // Send 10us pulse to trigger
     digitalWrite (sonar, TRUE) ;
     delayMicroseconds (10) ;
     digitalWrite (sonar, FALSE) ;
-    start =  millis () ;
-    count =  millis () ;
+    start =  micros () ;
+    count =  micros () ;
     pinMode (sonar, INPUT) ; // set sonar as input
-    while ((digitalRead (sonar) == 0) && ((millis() - count) < 100))
-        start = millis () ;
+    while ((digitalRead (sonar) == 0) && ((micros() - count) < 100000))
+        start = micros () ;
+
+    count = micros () ;
     stop = count;
-    while ((digitalRead (sonar) == 1) && ((millis() - count) < 100))
-        stop = millis () ;
-    elapsed = stop - start ; // Calculate pulse length
+    while ((digitalRead (sonar) == 1) && ((micros() - count) < 100000))
+        stop = micros () ;
+
+    if (micros() - count >= 100000)
+    {
+        // Pulse took too long - so we assume no object, although
+        // in practice a response will get received bouncing back from 
+        // something in the vacinity.
+        // It's best to assume anything over 100cm is out of range.
+        return 0; 
+    }
+
+    elapsed = stop - start ; // Calculate pulse length (us)
+
     // Distance pulse travelled in that time is time
-    // multiplied by the speed of sound (cm/s)
-    distance = elapsed * 34 ;
-    // That was the distance there and back so halve the value
-    distance = distance / 2 ;
-    return distance ;
+    // multiplied by the speed of sound (34.4 cm/ms at 21c)
+    distance = elapsed * 344 ;
+
+    // Convert to centimeters and halve value because it is there and back again
+    return distance / 20000;
 }
+
 
 // End of UltraSonic Functions
 //======================================================================
