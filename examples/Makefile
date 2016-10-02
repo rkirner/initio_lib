@@ -1,23 +1,26 @@
 #
-# Simple Makefile for compiling and git interface
+# Simple Makefile for compiling programs for initio robot car and git interface
 #
-SHELL = bash
-GCC = gcc
-PROG1 = initioTest
-PROG2 = initioTest2
+SHELL	= bash
+GCC	= gcc
+LIBS	= -lcurses -lwiringPi -lpthread -linitio
+CFLAGS	= -Wall -Werror
+
+PROGS 	= testIR \
+	  remoteControl \
+	  remoteControl2 \
+
+RUN	= remoteControl2
 
 .PHONY: all run status pull commit sync help
 
-all: $(PROG1) $(PROG2)
+all: $(PROGS)
 
-run: $(PROG2)
+run: $(RUN)
 	sudo ./$<
 
-$(PROG1): $(PROG1).c
-	$(GCC) -o $@ -Wall -Werror -lcurses -lwiringPi -lpthread -linitio -I.. $<
-
-$(PROG2): $(PROG2).c
-	$(GCC) -o $@ -Wall -Werror -lcurses -lwiringPi -lpthread -linitio -I.. $<
+% : %.c
+	$(GCC) -o $@ $(CFLAGS) $(LIBS) $<
 
 status:
 	git status
