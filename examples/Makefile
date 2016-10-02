@@ -3,8 +3,8 @@
 #
 SHELL	= bash
 GCC	= gcc
-LIBS	= -lcurses -lwiringPi -lpthread -linitio
 CFLAGS	= -Wall -Werror
+LFLAGS	= -lcurses -lwiringPi -lpthread -linitio
 
 PROGS 	= testIR \
 	  remoteControl \
@@ -20,7 +20,7 @@ run: $(RUN)
 	sudo ./$<
 
 % : %.c
-	$(GCC) -o $@ $(CFLAGS) $(LIBS) $<
+	$(GCC) -o $@ $(CFLAGS) $(LFLAGS) $<
 
 status:
 	git status
