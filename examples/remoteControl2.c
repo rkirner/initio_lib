@@ -18,6 +18,7 @@
 #include <sys/param.h>
 #include <curses.h>
 
+/* uncomment the following headers, if needed for extensions of this program */
 //#include <wiringPi.h>
 //#include <softPwm.h>
 #include "initio.h"
@@ -53,7 +54,7 @@ int main (int argc, char **argv)
     keypad (mainwin, TRUE) ; // enable the cursor and other keys to be detected
     void (*pMotionFunc)(int8_t) = initio_DriveForward;
 
-    mvprintw(1, 1, "motorControl: q..quit, cursor..steer, b..reverse, space/cursor-down..stop, shift-cursor..servo, r..centre servo, y/n..say yes/no, s..measure");
+    mvprintw(1, 1, "motorControl: q..quit, cursor..steer, b..reverse, space/cursor-down..stop, shift-cursor/aswd..servo, r..centre servo, y/n..say yes/no, m..measure");
     while (ch != KEY_ESCAPE && ch !='q') {
         bIrLeft = initio_IrLeft () ;
         bIrRight = initio_IrRight () ;
@@ -163,21 +164,25 @@ int main (int argc, char **argv)
 	    mvprintw(POSYS, POSXS, "Servo Reset %d,%d", posTilt, posPan);
             break;
         case KEY_SLEFT:
+        case 'a':
             posTilt = ADD_SERVO_TILT (posTilt, -10);
             initio_SetServo (servoTilt, posTilt) ;
 	    mvprintw(POSYS, POSXS, "Servo Left %d", posTilt);
             break;
         case KEY_SRIGHT:
+        case 'd':
             posTilt = ADD_SERVO_TILT (posTilt, 10);
             initio_SetServo (servoTilt, posTilt) ;
 	    mvprintw(POSYS, POSXS, "Servo Right %d", posTilt);
             break;
         case KEY_SUP:
+        case 'w':
             posPan = ADD_SERVO_PAN (posPan, 10);
             initio_SetServo (servoPan, posPan) ;
 	    mvprintw(POSYS, POSXS, "Servo Up %d", posPan);
             break;
         case KEY_SDOWN:
+        case 's':
             posPan = ADD_SERVO_PAN (posPan, -10);
             initio_SetServo (servoPan, posPan) ;
 	    mvprintw(POSYS, POSXS, "Servo Down %d", posPan);
@@ -200,10 +205,11 @@ int main (int argc, char **argv)
             posTilt = pos; initio_SetServo (servoTilt, posTilt) ;
             break;
         // Sensor updates
-        case 's':
+        case 'm':
+            // no specific action, just avoid the generic key message
             break;
         default:
-	    mvprintw(POSYS, POSXS, "You pressed: 0x%x (%d)", ch, ch);
+            mvprintw(POSYS, POSXS, "You pressed: 0x%x (%d) \"%s\"", ch, ch, keyname(ch) );
         } // switch
         timeNext = timeCurrent + delayMS;
 	refresh(); // update screen
