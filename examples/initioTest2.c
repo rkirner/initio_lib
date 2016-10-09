@@ -208,7 +208,7 @@ int main (int argc, char **argv)
         case 's':
             break;
         default:
-	    mvprintw(POSYS, POSXS, "You pressed: 0x%x (%d)", ch, ch);
+            mvprintw(POSYS, POSXS, "You pressed: 0x%x (%d) \"%s\"", ch, ch, keyname(ch) );
         } // switch
         timeNext = timeCurrent + delayMS;
 	refresh(); // update screen
