@@ -54,7 +54,7 @@ int main (int argc, char **argv)
     keypad (mainwin, TRUE) ; // enable the cursor and other keys to be detected
     void (*pMotionFunc)(int8_t) = initio_DriveForward;
 
-    mvprintw(1, 1, "motorControl: q..quit, cursor..steer, b..reverse, space/cursor-down..stop, shift-cursor/aswd..servo, r..centre servo, y/n..say yes/no, s..measure");
+    mvprintw(1, 1, "motorControl: q..quit, cursor..steer, b..reverse, space/cursor-down..stop, shift-cursor/aswd..servo, r..centre servo, y/n..say yes/no, m..measure");
     while (ch != KEY_ESCAPE && ch !='q') {
         bIrLeft = initio_IrLeft () ;
         bIrRight = initio_IrRight () ;
@@ -205,7 +205,8 @@ int main (int argc, char **argv)
             posTilt = pos; initio_SetServo (servoTilt, posTilt) ;
             break;
         // Sensor updates
-        case 's':
+        case 'm':
+            // no specific action, just avoid the generic key message
             break;
         default:
             mvprintw(POSYS, POSXS, "You pressed: 0x%x (%d) \"%s\"", ch, ch, keyname(ch) );
