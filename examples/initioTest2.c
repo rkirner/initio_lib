@@ -18,6 +18,7 @@
 #include <sys/param.h>
 #include <curses.h>
 
+/* uncomment the following headers, if needed for extensions of this program */
 //#include <wiringPi.h>
 //#include <softPwm.h>
 #include "initio.h"
