@@ -15,6 +15,7 @@
 
 #include <wiringPi.h>
 #include <softPwm.h>
+#include <stdint.h> // Needed for int8_t
 
 // When compiling you must include the followinglibraries: pthread, wiringPi:
 // cc -o myprog myprog.c -lwiringPi -lpthread
