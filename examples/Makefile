@@ -4,7 +4,7 @@
 SHELL	= bash
 GCC	= gcc
 CFLAGS	= -Wall -Werror
-LFLAGS	= -lcurses -lwiringPi -lpthread -linitio
+LFLAGS	= -linitio -lwiringPi -lcurses -lpthread
 
 PROGS 	= testIR \
 	  remoteControl \
