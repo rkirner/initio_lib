@@ -25,6 +25,7 @@ o ServoBlaster
 
 Download:
   $> git clone https://github.com/rkirner/initio_lib
+  $> cd initio_lib
 
 Installation:
 Simply type:
