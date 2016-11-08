@@ -40,7 +40,8 @@ static char* MergeStrings(int num_args, char* str1, ...);
 static FILE *fpServoBlaster = NULL;
 
 int L1, L2, R1, R2;  // board specific pin numbers of left/right motor
-int sonar;           // board specific pin numbers of ultrasonic sensor
+int lineLeft;        // board specific pin number of left IR line sensor
+int sonar;           // board specific pin number of ultrasonic sensor
 
 
 //======================================================================
@@ -83,6 +84,7 @@ void initio_Init()
          L2 = L2_PiRoCon;
          R1 = R1_PiRoCon;
          R2 = R2_PiRoCon;
+         lineLeft = lineLeft_PiRoCon;
          sonar = sonar_PiRoCon;
          break;
     case ROBOHAT:
@@ -90,6 +92,7 @@ void initio_Init()
          L2 = L2_RoboHAT;
          R1 = R1_RoboHAT;
          R2 = R2_RoboHAT;
+         lineLeft = lineLeft_RoboHat;
          sonar = sonar_RoboHAT;
          break;
     default: // unknown board idetified

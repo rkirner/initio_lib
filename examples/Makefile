@@ -22,6 +22,9 @@ run: $(RUN)
 % : %.c
 	$(GCC) -o $@ $(CFLAGS) $(LFLAGS) $<
 
+clean:
+	rm $(PROGS)
+
 status:
 	git status
 
@@ -38,6 +41,7 @@ help:
 	@echo
 	@echo "Possible commands:"
 	@echo " > make run"
+	@echo " > make clean"
 	@echo " > make status"
 	@echo " > make pull"
 	@echo " > make commit"
