@@ -15,7 +15,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
 #include <errno.h>
@@ -41,7 +40,8 @@ static char* MergeStrings(int num_args, char* str1, ...);
 static FILE *fpServoBlaster = NULL;
 
 int L1, L2, R1, R2;  // board specific pin numbers of left/right motor
-int sonar;           // board specific pin numbers of ultrasonic sensor
+int lineLeft;        // board specific pin number of left IR line sensor
+int sonar;           // board specific pin number of ultrasonic sensor
 
 
 //======================================================================
@@ -84,6 +84,7 @@ void initio_Init()
          L2 = L2_PiRoCon;
          R1 = R1_PiRoCon;
          R2 = R2_PiRoCon;
+         lineLeft = lineLeft_PiRoCon;
          sonar = sonar_PiRoCon;
          break;
     case ROBOHAT:
@@ -91,6 +92,7 @@ void initio_Init()
          L2 = L2_RoboHAT;
          R1 = R1_RoboHAT;
          R2 = R2_RoboHAT;
+         lineLeft = lineLeft_RoboHat;
          sonar = sonar_RoboHAT;
          break;
     default: // unknown board idetified
@@ -317,43 +319,54 @@ BOOL initio_IrLineRight (void)
 
 // initio_UsGetDistance():
 // Returns the distance in cm to the nearest reflecting object. 0 == no object
+//
+// The inito uses the HC-SR04 ultrasonic sensor, which provides distance measurement
+// in the range of 2cm - 4m, with ranging accuracy up to 3mm.
+// The HC-SR04 needs on trigger input a HIGH pulse of at least 10us to start measurement
+// and returns on output a HIGH pulse with length proportional to distance (the time
+// the pulse travelled to the object and back). On the initio the trigger and output
+// pins of the HC-SR04 are mapped to one I/O pin (sonar).
 unsigned int initio_UsGetDistance (void)
 {
     unsigned long start, count, stop, elapsed, distance;
 
     pinMode (sonar, OUTPUT) ; // set sonar as output
-    // Send 10us pulse to trigger
+    // Send 10us HIGH pulse to trigger
     digitalWrite (sonar, TRUE) ;
     delayMicroseconds (10) ;
     digitalWrite (sonar, FALSE) ;
-    start =  micros () ;
+
+    // Measure the length of returning HIGH pulse
     count =  micros () ;
+    start =  count ;
     pinMode (sonar, INPUT) ; // set sonar as input
-    while ((digitalRead (sonar) == 0) && ((micros() - count) < 100000))
+    // 1. Wait till returning HIGH pulse begins and remember time (with 100ms timeout)
+    while ((digitalRead (sonar) == 0) && ((start - count) < 100000))
         start = micros () ;
 
     count = micros () ;
     stop = count;
-    while ((digitalRead (sonar) == 1) && ((micros() - count) < 100000))
+    // 2. Wait till returning HIGH pulse ends and remember time (with 100ms timeout)
+    while ((digitalRead (sonar) == 1) && ((stop - count) < 100000))
         stop = micros () ;
 
-    if (micros() - count >= 100000)
+    elapsed = stop - start ; // Calculate pulse length (us)
+    if (elapsed >= 100000)
     {
         // Pulse took too long - so we assume no object, although
         // in practice a response will get received bouncing back from 
         // something in the vacinity.
-        // It's best to assume anything over 100cm is out of range.
+        // It's best to assume anything over 100 ms is out of range.
         return 0; 
     }
 
-    elapsed = stop - start ; // Calculate pulse length (us)
+    // Convert measured pulse length in us into distance in cm:
+    // Distance pulse is travelled is elapsed time multiplied
+    // by the speed of sound (34.4 cm/ms at 21c), therefore scaled from us to ms,
+    // and halved (as pulse had travelled the distance twice)
+    distance = (elapsed * 344) / 20000 ;
 
-    // Distance pulse travelled in that time is time
-    // multiplied by the speed of sound (34.4 cm/ms at 21c)
-    distance = elapsed * 344 ;
-
-    // Convert to centimeters and halve value because it is there and back again
-    return distance / 20000;
+    return distance;
 }
 
 

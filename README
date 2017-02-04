@@ -23,6 +23,10 @@ o ServoBlaster
    RaspberryPI is included.)
 
 
+Download:
+  $> git clone https://github.com/rkirner/initio_lib
+  $> cd initio_lib
+
 Installation:
 Simply type:
 
@@ -38,6 +42,15 @@ library path.  If not, adding the line
 into the file '/etc/ld.so.conf' might help, with running afterwards
   $> sudo ldconfig
 
+Put the ServoBlaster binary in search path:
+  $> sudo cp ./resources/servod /usr/local/bin/
+(make sure that "/usr/local/bin/" is listed in your PATH environment variable)
+
+Optional: Some examples use the ncurses library.
+If you don't have it installed, you might want to install it
+(might need to update version in future):
+  $> sudo apt-get install libncurses5
+  $> sudo apt-get install libncurses5-dev
 
 Development notes:
 This library has been heavily inspired by the original Python version

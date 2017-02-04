@@ -15,6 +15,7 @@
 
 #include <wiringPi.h>
 #include <softPwm.h>
+#include <stdint.h> // Needed for int8_t
 
 // When compiling you must include the followinglibraries: pthread, wiringPi:
 // cc -o myprog myprog.c -lwiringPi -lpthread
@@ -53,7 +54,8 @@
 // Define pins for obstacle sensors and line sensors
 #define irFL 7
 #define irFR 11
-#define lineLeft 12
+#define lineLeft_PiRoCon 12
+#define lineLeft_RoboHat 29
 #define lineRight 13
 
 // Define Sonar Pin (same pin for both Ping and Echo)

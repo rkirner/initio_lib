@@ -18,6 +18,7 @@
 #include <sys/param.h>
 #include <curses.h>
 
+/* uncomment the following headers, if needed for extensions of this program */
 //#include <wiringPi.h>
 //#include <softPwm.h>
 #include "initio.h"
@@ -47,63 +48,61 @@ int main (int argc, char **argv)
 
     mvprintw(1, 1, "motorControl: q..quit, cursor..steer, a/z..speed, space..stop, shift-cursor..servo, b..centre servo, s..measure");
     while (ch != KEY_ESCAPE && ch !='q') {
-        bIrLeft = initio_IrLeft () ;
-        bIrRight = initio_IrRight () ;
-        bLineLeft = initio_IrLineLeft () ;
-        bLineRight = initio_IrLineRight () ;
-        distance = initio_UsGetDistance () ;
-        bWheelLeft = initio_wheelSensorLeft () ;
+        bIrLeft =     initio_IrLeft () ;
+        bIrRight =    initio_IrRight () ;
+        bLineLeft =   initio_IrLineLeft () ;
+        bLineRight =  initio_IrLineRight () ;
+        distance =    initio_UsGetDistance () ;
+        bWheelLeft =  initio_wheelSensorLeft () ;
         bWheelRight = initio_wheelSensorRight () ;
-        mvprintw(5,10, "IrLeft:   %c (%d)", bIrLeft ? 'T' : '_', bIrLeft) ;
-        mvprintw(5,30, "IrRight:   %c (%d)", bIrRight ? 'T' : '_', bIrRight) ;
-        mvprintw(6,10, "LineLeft: %c (%d)", bLineLeft ? 'T' : '_', bLineLeft) ;
-        mvprintw(6,30, "LineRight: %c (%d)", bLineRight ? 'T' : '_', bLineRight) ;
-        mvprintw(7,10, "Distance: %d cm  ", distance) ;
-        mvprintw(8,10, "WheelLeft: %d", bWheelLeft) ;
-        mvprintw(8,30, "WheelRight: %d", bWheelRight) ;
+        mvprintw(5,10, "IrLeft:   %c (%d)",  bIrLeft    ? 'T' : '_', bIrLeft    ) ;
+        mvprintw(5,30, "IrRight:   %c (%d)", bIrRight   ? 'T' : '_', bIrRight   ) ;
+        mvprintw(6,10, "LineLeft: %c (%d)",  bLineLeft  ? 'T' : '_', bLineLeft  ) ;
+        mvprintw(6,30, "LineRight: %c (%d)", bLineRight ? 'T' : '_', bLineRight ) ;
+        mvprintw(7,10, "Distance: %d cm  ",  distance    ) ;
+        mvprintw(8,10, "WheelLeft: %d",      bWheelLeft  ) ;
+        mvprintw(8,30, "WheelRight: %d",     bWheelRight ) ;
         mvprintw(POSYS, POSXS, "");
         ch = getch() ;
         deleteln();
         switch ( ch ) {
         // Motor control keys
         case 'a':
+            bBrake = FALSE ;
             speed = MIN(100,speed+10);
-            if (bBrake == FALSE) (*pMotionFunc) (speed) ;
+            initio_DriveForward (speed);
 	    mvprintw(POSYS, POSXS, "Speed+ %d", speed);
             break;
         case 'z':
+            bBrake = FALSE ;
             speed = MAX(0,speed-10);
-            if (bBrake == FALSE) (*pMotionFunc) (speed) ;
+            initio_DriveForward (speed);
 	    mvprintw(POSYS, POSXS, "Speed- %d", speed);
             break;
         case KEY_LEFT:
             bBrake = FALSE ;
-            pMotionFunc = initio_SpinLeft ;
-            (*pMotionFunc) (speed) ;
+            initio_SpinLeft (speed);
 	    mvprintw(POSYS, POSXS, "Spin Left %d", speed);
             break;
         case KEY_RIGHT:
             bBrake = FALSE ;
-            pMotionFunc = initio_SpinRight ;
-            (*pMotionFunc) (speed) ;
+            initio_SpinRight (speed);
 	    mvprintw(POSYS, POSXS, "Spin Right %d", speed);
             break;
         case KEY_UP:
             bBrake = FALSE ;
-            pMotionFunc = initio_DriveForward ;
-            (*pMotionFunc) (speed) ;
+            initio_DriveForward (speed);
 	    mvprintw(POSYS, POSXS, "Forward %d", speed);
             break;
         case KEY_DOWN:
             bBrake = FALSE ;
-            pMotionFunc = initio_DriveReverse ;
-            (*pMotionFunc) (speed) ;
+            initio_DriveReverse (speed);
 	    mvprintw(POSYS, POSXS, "Reverse %d", speed);
             break;
         case ' ':
             bBrake = ! bBrake ;
             if (bBrake == TRUE) {
-                (*pMotionFunc) (0) ;
+                initio_DriveForward (0) ;
 	        mvprintw(POSYS, POSXS, "Brake On %d", 0);
             }
             else {
