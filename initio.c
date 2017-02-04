@@ -130,7 +130,7 @@ void initio_Cleanup()
 {
     int usedPins[13] = { L1, L2, R1, R2, wheelLeft, wheelRight, 
                          irFL, irFR, lineLeft, lineRight,
-                         sonar, servoPan, servoTilt  };
+                         sonar, servoPanPin, servoTiltPin  };
     int pin;
 
     // Stop all motors

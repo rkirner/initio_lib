@@ -64,7 +64,9 @@
 // Define logical Servo pins for Pan/Tilt
 // (they are mapped to Port 1 pins 18 and 22)
 #define servoPan 0
+#define servoPanPin 18     
 #define servoTilt 1
+#define servoTiltPin 22
 
 
 //======================================================================
