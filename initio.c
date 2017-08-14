@@ -263,7 +263,7 @@ BOOL initio_wheelSensorLeft (void)
 // Returns the status of the right wheel position sensor connected to pin(wheelRight).
 BOOL initio_wheelSensorRight (void)
 {
-    return (digitalRead (wheelLeft)) ;
+    return (digitalRead (wheelRight)) ;
 }
 
 // End of Wheel Sensor Functions
