@@ -44,17 +44,20 @@ int main (int argc, char **argv)
     const unsigned int delayGestureUS = 500000; // delay in us for yes/no gestures
     unsigned int timeCurrent, timeNext = 0;
     unsigned int distance;
-    WINDOW *mainwin;
     BOOL bIrLeft=FALSE, bIrRight=FALSE, bLineLeft=FALSE, bLineRight=FALSE;
     BOOL bWheelLeft, bWheelRight;
 
-    initio_Init() ;
-    mainwin = initscr () ;
-    noecho () ; // prevent the key being echoed
-    keypad (mainwin, TRUE) ; // enable the cursor and other keys to be detected
+    WINDOW *mainwin = initscr ();   // curses: init screen
+    noecho ();                      // curses: prevent the key being echoed
+    cbreak ();                      // curses: disable line buffering
+    nodelay (mainwin, TRUE);        // curses: set getch() as non-blocking
+    keypad (mainwin, TRUE);         // curses: enable the cursor and other keys to be detected
+
+    initio_Init(); // initio: init the library
+
     void (*pMotionFunc)(int8_t) = initio_DriveForward;
 
-    mvprintw(1, 1, "motorControl: q..quit, cursor..steer, b..reverse, space/cursor-down..stop, shift-cursor/aswd..servo, r..centre servo, y/n..say yes/no, m..measure");
+    mvprintw(1, 1, "motorControl: q..quit, cursor..steer, b..reverse, space/cursor-down..stop, shift-cursor/aswd..servo, r..centre servo, y/n..say yes/no");
     while (ch != KEY_ESCAPE && ch !='q') {
         bIrLeft = initio_IrLeft () ;
         bIrRight = initio_IrRight () ;
@@ -204,12 +207,9 @@ int main (int argc, char **argv)
             delayMicroseconds (delayGestureUS) ;
             posTilt = pos; initio_SetServo (servoTilt, posTilt) ;
             break;
-        // Sensor updates
-        case 'm':
-            // no specific action, just avoid the generic key message
-            break;
         default:
-            mvprintw(POSYS, POSXS, "You pressed: 0x%x (%d) \"%s\"", ch, ch, keyname(ch) );
+            if (ch != ERR)
+                mvprintw(POSYS, POSXS, "Key code: '%c' (%d) \"%s\"", ch, ch, keyname(ch) );
         } // switch
         timeNext = timeCurrent + delayMS;
 	refresh(); // update screen
