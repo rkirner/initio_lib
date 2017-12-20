@@ -27,8 +27,8 @@
 #define KEY_SDOWN 336
 #define KEY_SUP 337
 
-#define POSXS  10
-#define POSYS  10
+#define POSXS  10 // column and line of extra status print
+#define POSYS  11 
 
 #define ADD_MOTOR_SPEED(var, val) (MAX(0 , MIN( 100, (var)+(val) )))  // limit virtual motor speed to 0/100
 #define ADD_SERVO_TILT(var, val) (MAX(-80 , MIN( 80, (var)+(val) )))  // limit horizontal movement: -80/80 to avoid non-resting motors
@@ -59,20 +59,22 @@ int main (int argc, char **argv)
 
     mvprintw(1, 1, "motorControl: q..quit, cursor..steer, b..reverse, space/cursor-down..stop, shift-cursor/aswd..servo, r..centre servo, y/n..say yes/no");
     while (ch != KEY_ESCAPE && ch !='q') {
-        bIrLeft = initio_IrLeft () ;
+        bIrLeft =  initio_IrLeft () ;
         bIrRight = initio_IrRight () ;
-        bLineLeft = initio_IrLineLeft () ;
+        bLineLeft =  initio_IrLineLeft () ;
         bLineRight = initio_IrLineRight () ;
         distance = initio_UsGetDistance () ;
-        bWheelLeft = initio_wheelSensorLeft () ;
+        bWheelLeft =  initio_wheelSensorLeft () ;
         bWheelRight = initio_wheelSensorRight () ;
-        mvprintw(5,10, "IrLeft:   %c (%d)", bIrLeft ? 'T' : '_', bIrLeft) ;
-        mvprintw(5,30, "IrRight:   %c (%d)", bIrRight ? 'T' : '_', bIrRight) ;
-        mvprintw(6,10, "LineLeft: %c (%d)", bLineLeft ? 'T' : '_', bLineLeft) ;
-        mvprintw(6,30, "LineRight: %c (%d)", bLineRight ? 'T' : '_', bLineRight) ;
-        mvprintw(7,10, "Distance: %d cm  ", distance) ;
-        mvprintw(8,10, "WheelLeft: %d", bWheelLeft) ;
-        mvprintw(8,30, "WheelRight: %d", bWheelRight) ;
+        mvprintw(5,10, "IrLeft:    %c (%d)",  bIrLeft  ? 'T' : '_', bIrLeft) ;
+        mvprintw(5,35, "IrRight:    %c (%d)", bIrRight ? 'T' : '_', bIrRight) ;
+        mvprintw(6,10, "LineLeft:  %c (%d)",  bLineLeft  ? 'T' : '_', bLineLeft) ;
+        mvprintw(6,35, "LineRight : %c (%d)", bLineRight ? 'T' : '_', bLineRight) ;
+        mvprintw(7,10, "Distance:  %d cm  ", distance) ;
+        mvprintw(8,10, "WheelLeft: %d",  bWheelLeft) ;
+        mvprintw(8,35, "WheelRight: %d", bWheelRight) ;
+        mvprintw(9,10, "DriveMode: %s    ", driveModeNames[driveMode]) ;
+        mvprintw(9,35, "PWM:        %d  ", speed);
         mvprintw(POSYS, POSXS, "");
         timeCurrent = millis () ;
         ch = getch() ;
@@ -211,7 +213,6 @@ int main (int argc, char **argv)
             if (ch != ERR)
                 mvprintw(POSYS, POSXS, "Key code: '%c' (%d) \"%s\"", ch, ch, keyname(ch) );
         } // switch
-        timeNext = timeCurrent + delayMS;
 	refresh(); // update screen
     } // endwhile
     // resource cleanup for ncurses
