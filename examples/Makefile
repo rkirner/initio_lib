@@ -7,6 +7,7 @@ CFLAGS	= -Wall -Werror
 LFLAGS	= -linitio -lwiringPi -lcurses -lpthread
 
 PROGS 	= testIR \
+	  testIO \
 	  remoteControl \
 	  remoteControl2 \
 
