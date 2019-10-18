@@ -28,14 +28,10 @@
 // cc -o myprog myprog.c -lwiringPi -lpthread
 
 // support for compile definitions HAVE_ROBOHAT, HAVE_PIROCON2
-#if defined(ROBOBOARD)
-  #if defined(HAVE_ROBOHAT)
-    #define ROBOBOARD ROBOHAT
-  #elif defined(HAVE_PIROCON2)
-    #define ROBOBOARD PIROCON2
-  #else
-    #define ROBOBOARD UNKNOWN_HAT
-  #endif 	 	 	
+#if defined(HAVE_ROBOHAT)
+  #define ROBOBOARD ROBOHAT
+#elif defined(HAVE_PIROCON2)
+  #define ROBOBOARD PIROCON2
 #else
  #define ROBOBOARD ROBOHAT
 #endif
