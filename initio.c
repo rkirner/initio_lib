@@ -27,6 +27,20 @@
 // When compiling you must include the libraries pthread, wiringPi:
 // cc -o myprog myprog.c -lwiringPi -lpthread
 
+// support for compile definitions HAVE_ROBOHAT, HAVE_PIROCON2
+#if defined(ROBOBOARD)
+  #if defined(HAVE_ROBOHAT)
+    #define ROBOBOARD ROBOHAT
+  #elif defined(HAVE_PIROCON2)
+    #define ROBOBOARD PIROCON2
+  #else
+    #define ROBOBOARD UNKNOWN_HAT
+  #endif 	 	 	
+#else
+ #define ROBOBOARD ROBOHAT
+#endif
+int roboboard = ROBOBOARD;  // identifier of Initio control board
+
 
 //======================================================================
 // Helper Functions
@@ -52,6 +66,9 @@ int sonar;           // board specific pin number of ultrasonic sensor
 // 
 int initio_identifyControlBoard()
 {
+    /* the following code was used to automatically differentiate between ROBOHAT and PIROCON2
+       boards. That feature became obsolete when later versions of the ROBOHAT board lost
+       their distinctive identification via "/proc/device-tree/hat/product".
     FILE *fp;
     int board;
     char name[20];
@@ -70,6 +87,8 @@ int initio_identifyControlBoard()
         board = PIROCON2;
     }
     return board;
+    */
+    return roboboard;
 }
 
 // initio_init():

@@ -6,6 +6,8 @@ SHELL = bash
 #GCC = arm-linux-gnueabi-gcc  # cross-compilation for RPI on Linux
 GCC = gcc
 LIB = initio
+DEFINE = -DHAVE_ROBOHAT   #possible roboboard definitions: HAVE_ROBOHAT, HAVE_PIROCON2
+
 
 .PHONY: all compile link install status pull commit sync help
 
@@ -18,7 +20,7 @@ $(LIB).so: $(LIB).o
 	$(GCC) -shared -o lib$(LIB).so $(LIB).o
 
 compile:
-	$(GCC) -c -Wall -Werror -I./resources $(LIB).c
+	$(GCC) -c -Wall -Werror -I./resources $(DEFINE) $(LIB).c
 
 link:
 	$(GCC) -shared -o lib$(LIB).so $(LIB).o

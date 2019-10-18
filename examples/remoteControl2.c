@@ -56,6 +56,9 @@ int main (int argc, char **argv)
     initio_Init(); // initio: init the library
 
     void (*pMotionFunc)(int8_t) = initio_DriveForward;
+    int board = initio_identifyControlBoard();
+
+
 
     mvprintw(1, 1, "motorControl: q..quit, cursor..steer, b..reverse, space/cursor-down..stop, shift-cursor/aswd..servo, r..centre servo, y/n..say yes/no");
     while (ch != KEY_ESCAPE && ch !='q') {
@@ -75,6 +78,19 @@ int main (int argc, char **argv)
         mvprintw(8,35, "WheelRight: %d", bWheelRight) ;
         mvprintw(9,10, "DriveMode: %s    ", driveModeNames[driveMode]) ;
         mvprintw(9,35, "PWM:        %d  ", speed);
+
+        switch(board)
+        {
+        case PIROCON2:
+            mvprintw(2, 10,"board: PIROCON2   ");
+            break;
+        case ROBOHAT:
+            mvprintw(2, 10,"board: ROBOHAT  ");
+            break;
+        default: // unknown board idetified
+            mvprintw(2, 10,"board: unknown   ");
+        }
+
         mvprintw(POSYS, POSXS, "");
         timeCurrent = millis () ;
         ch = getch() ;

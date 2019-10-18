@@ -24,7 +24,7 @@ run: $(RUN)
 	$(GCC) -o $@ $(CFLAGS) $(LFLAGS) $<
 
 clean:
-	rm $(PROGS)
+	rm -f $(PROGS)
 
 status:
 	git status

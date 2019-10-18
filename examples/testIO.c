@@ -26,15 +26,29 @@
 //======================================================================
 void testIO(int argc, char *argv[]) 
 {
+  int board;           // type of connected robot control board
   int ch = 0;
   int statusP37 = 0;   // status flag for Pin 37
 
+  board = initio_identifyControlBoard();
   pinMode (37, OUTPUT) ; // set Pin 37 to output mode
 
   while (ch != 'q') {
     mvprintw(1, 1,"%s:  Simple IO pin test program", argv[0]);
     mvprintw(2, 1,"  'q'.. exit, 'a'.. toggle PIN37 On/Off");
     mvprintw(3, 1,"status PIN 37: %s ", (statusP37 == 0) ? "off" : "on");
+
+    switch(board)
+    {
+    case PIROCON2:
+      mvprintw(5, 1,"board: PIROCON2   ");
+      break;
+    case ROBOHAT:
+      mvprintw(5, 1,"board: ROBOHAT  ");
+      break;
+    default: // unknown board idetified
+      mvprintw(5, 1,"board: unknown   ");
+    }
 
     ch = getch();
     switch ( ch ) {
@@ -43,7 +57,7 @@ void testIO(int argc, char *argv[])
       break;
     default:
       if (ch != ERR)
-        mvprintw(4, 1, "Key code: '%c' (%d) \"%s\"", ch, ch, keyname(ch) );
+        mvprintw(6, 1, "Key code: '%c' (%d) \"%s\"", ch, ch, keyname(ch) );
     }
     refresh();
 
