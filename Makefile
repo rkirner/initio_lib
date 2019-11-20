@@ -6,7 +6,7 @@ SHELL = bash
 #GCC = arm-linux-gnueabi-gcc  # cross-compilation for RPI on Linux
 GCC = gcc
 LIB = initio
-DEFINE = -DHAVE_ROBOHAT   #possible roboboard definitions: HAVE_ROBOHAT, HAVE_PIROCON2
+DEFINE = -D HAVE_PIROCON2   #possible roboboard definitions: HAVE_ROBOHAT, HAVE_PIROCON2
 
 
 .PHONY: all compile link install status pull commit sync help
@@ -16,7 +16,7 @@ all: status
 $(LIB).o: $(LIB).c
 	$(GCC) -c -Wall -Werror -I./resources $(LIB).c
 
-$(LIB).so: $(LIB).o
+lib$(LIB).so: $(LIB).o
 	$(GCC) -shared -o lib$(LIB).so $(LIB).o
 
 compile:
@@ -25,7 +25,7 @@ compile:
 link:
 	$(GCC) -shared -o lib$(LIB).so $(LIB).o
 
-install: $(LIB).so
+install: lib$(LIB).so
 	sudo cp $(LIB).h /usr/local/include/$(LIB).h
 	sudo cp lib$(LIB).so /usr/local/lib/lib$(LIB).so
 	@echo "installation done. Please make sure that 'servod' is within search path."
@@ -42,6 +42,9 @@ commit:
 
 sync: pull commit
 
+clean:
+	rm -f $(LIB).o lib$(LIB).so
+
 help:
 	@echo
 	@echo "Possible commands:"
@@ -52,5 +55,6 @@ help:
 	@echo " > make pull"
 	@echo " > make commit"
 	@echo " > make sync"
+	@echo " > make clean"
 	@echo
 
