@@ -6,7 +6,7 @@ SHELL = bash
 #GCC = arm-linux-gnueabi-gcc  # cross-compilation for RPI on Linux
 GCC = gcc
 LIB = initio
-DEFINE = -D HAVE_PIROCON2   #possible roboboard definitions: HAVE_ROBOHAT, HAVE_PIROCON2
+DEFINE = -D HAVE_ROBOHAT   #possible roboboard definitions: HAVE_ROBOHAT, HAVE_PIROCON2
 
 
 .PHONY: all compile link install status pull commit sync help
